@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPECTER PERÚ — Recarga Automática</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        :root{--naranja:#FF6B00;--naranja-oscuro:#E65C00;--negro:#000;--gris:#1a1a1a;--blanco:#fff;}
+        body{background:var(--negro);color:var(--blanco);min-height:100vh;padding:20px;}
+        .container{max-width:450px;margin:0 auto;}
+        .header{text-align:center;margin-bottom:30px;}
+        .logo{font-size:28px;font-weight:bold;color:var(--naranja);margin-bottom:5px;}
+        .sub{color:#888;font-size:14px;}
+        .seccion{background:var(--gris);border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #333;}
+        h2{color:var(--naranja);font-size:18px;margin-bottom:15px;text-align:center;}
+        .plan{background:#2a2a2a;border-radius:8px;padding:12px;margin-bottom:10px;cursor:pointer;transition:0.3s;border:2px solid transparent;}
+        .plan:hover,.plan.seleccionado{border-color:var(--naranja);background:#333;}
+        .plan-nombre{font-weight:bold;font-size:15px;}
+        .plan-monto{color:var(--naranja);font-size:18px;font-weight:bold;}
+        .info-pago{display:none;margin-top:20px;background:#222;border-radius:10px;padding:20px;}
+        .info-pago.activo{display:block;}
+        .qr-img{width:200px;height:200px;margin:15px auto;display:block;border-radius:8px;background:#333;}
+        .dato-pago{background:#333;padding:10px;border-radius:6px;margin:8px 0;font-size:14px;}
+        .dato-pago strong{color:var(--naranja);}
+        .btn{width:100%;padding:14px;background:var(--naranja);color:white;border:none;border-radius:8px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:15px;}
+        .btn:hover{background:var(--naranja-oscuro);}
+        .user-id{background:#333;padding:8px;border-radius:6px;margin-bottom:15px;font-size:13px;color:#aaa;}
+        .copiar{background:#444;border:none;color:white;padding:4px 8px;border-radius:4px;font-size:12px;cursor:pointer;float:right;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">⚜️ SPECTER PERÚ</div>
+            <div class="sub">RECARGA AUTOMÁTICA ⚡</div>
+        </div>
+
+        <div class="user-id">
+            Tu ID: <span id="user_id_display">No detectado</span>
+            <button class="copiar" onclick="copiarTexto('user_id_display')">Copiar</button>
+        </div>
+
+        <div class="seccion">
+            <h2>💰 CRÉDITOS</h2>
+            <div class="plan" data-plan="c100" data-monto="10" data-creditos="100">
+                <div class="plan-nombre">🥉 100 Créditos</div>
+                <div class="plan-monto">S/ 10.00</div>
+            </div>
+            <div class="plan" data-plan="c200" data-monto="20" data-creditos="200">
+                <div class="plan-nombre">🥈 200 Créditos</div>
+                <div class="plan-monto">S/ 20.00</div>
+            </div>
+            <div class="plan" data-plan="c400" data-monto="30" data-creditos="400">
+                <div class="plan-nombre">🥇 400 Créditos</div>
+                <div class="plan-monto">S/ 30.00</div>
+            </div>
+            <div class="plan" data-plan="c500" data-monto="40" data-creditos="500">
+                <div class="plan-nombre">💠 500 Créditos</div>
+                <div class="plan-monto">S/ 40.00</div>
+            </div>
+            <div class="plan" data-plan="c800" data-monto="50" data-creditos="800">
+                <div class="plan-nombre">🚀 800 Créditos</div>
+                <div class="plan-monto">S/ 50.00</div>
+            </div>
+            <div class="plan" data-plan="c2000" data-monto="100" data-creditos="2000">
+                <div class="plan-nombre">👑 2,000 Créditos</div>
+                <div class="plan-monto">S/ 100.00</div>
+            </div>
+            <div class="plan" data-plan="c4300" data-monto="200" data-creditos="4300">
+                <div class="plan-nombre">💎 4,300 Créditos</div>
+                <div class="plan-monto">S/ 200.00</div>
+            </div>
+        </div>
+
+        <div class="seccion">
+            <h2>♾️ PLANES ILIMITADOS</h2>
+            <div class="plan" data-plan="i7" data-monto="20" data-dias="7">
+                <div class="plan-nombre">💥 7 Días Ilimitado</div>
+                <div class="plan-monto">S/ 20.00</div>
+            </div>
+            <div class="plan" data-plan="i15" data-monto="35" data-dias="15">
+                <div class="plan-nombre">⚡ 15 Días Ilimitado</div>
+                <div class="plan-monto">S/ 35.00</div>
+            </div>
+            <div class="plan" data-plan="i30" data-monto="60" data-dias="30">
+                <div class="plan-nombre">🔱 30 Días Ilimitado</div>
+                <div class="plan-monto">S/ 60.00</div>
+            </div>
+            <div class="plan" data-plan="i60" data-monto="100" data-dias="60">
+                <div class="plan-nombre">👑 60 Días Ilimitado</div>
+                <div class="plan-monto">S/ 100.00</div>
+            </div>
+        </div>
+
+        <div class="info-pago" id="info_pago">
+            <h2>💳 DATOS DE PAGO</h2>
+            <img id="qr_imagen" class="qr-img" src="https://i.imgur.com/TU_QR_YAPE.jpg" alt="QR Yape">
+            
+            <div class="dato-pago">
+                <strong>📱 Yape / Plin:</strong><br>
+                <span id="yape_num">987654321</span> — <span id="yape_titular">SPECTER PERU</span>
+            </div>
+            
+            <div class="dato-pago">
+                <strong>🏦 CCI — BCP:</strong><br>
+                <span id="cci_num">0021234567890987654321</span><br>
+                Titular: <span id="cci_titular">SPECTER PERU</span>
+            </div>
+            
+            <div class="dato-pago">
+                <strong>💰 Monto a pagar:</strong><br>
+                <span id="monto_pagar" style="font-size:20px;color:#FF6B00;font-weight:bold;">S/ 0.00</span>
+            </div>
+            
+            <div style="background:#3a2a00;padding:10px;border-radius:6px;margin-top:15px;font-size:13px;">
+                ⚡ <strong>Recarga Automática:</strong> Vincula tu número con /micelular 9XXXXXXXXX en el bot y los créditos se sumarán solos cuando pagues desde ese número.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let user_id = "";
+        let plan_seleccionado = null;
+
+        // Obtener user_id de la URL
+        window.onload = function(){
+            const params = new URLSearchParams(window.location.search);
+            user_id = params.get("user_id") || "";
+            document.getElementById("user_id_display").textContent = user_id || "Abre desde el bot para obtener tu ID";
+        };
+
+        // Seleccionar plan
+        document.querySelectorAll(".plan").forEach(plan => {
+            plan.addEventListener("click", function(){
+                document.querySelectorAll(".plan").forEach(p => p.classList.remove("seleccionado"));
+                this.classList.add("seleccionado");
+                plan_seleccionado = this.dataset;
+                
+                // Mostrar info de pago
+                document.getElementById("info_pago").classList.add("activo");
+                document.getElementById("monto_pagar").textContent = "S/ " + plan_seleccionado.monto + ".00";
+                document.getElementById("info_pago").scrollIntoView({behavior:"smooth"});
+            });
+        });
+
+        function copiarTexto(elementId){
+            const texto = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(texto).then(()=>alert("Copiado!"));
+        }
+    </script>
+</body>
+  </html>
+
