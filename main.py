@@ -3,6 +3,7 @@ import requests
 import asyncio
 import json
 import os
+import asyncio
 import re
 import functools
 
@@ -404,7 +405,7 @@ def iniciar_servidor_http():
 # ──────────────────────────────────────────────────────────────
 def main():
     # 🛡️ Anti-Dormir
-    iniciar_keep_alive()
+    keep_alive()
     
     # 🌐 Iniciar servidor HTTP en hilo separado
     threading.Thread(target=iniciar_servidor_http, daemon=True).start()
@@ -430,8 +431,7 @@ def main():
     print("🌐 PUERTO HTTP ABIERTO — Render detectado ✅")
     print("==============================================")
 
-    # 🔧 Fix para Python 3.14+
-    import asyncio
+    
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError:
