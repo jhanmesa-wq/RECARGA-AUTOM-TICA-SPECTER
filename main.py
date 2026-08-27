@@ -377,45 +377,69 @@ async def consultar_codigo(id_solicitud):
 # ──────────────────────────────────────────────────────────────
 # 🚀 INICIAR BOT - FIX RENDER
 # ──────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────
+# 🌐 SERVIDOR HTTP MÍNIMO — Para que Render detecte el puerto
+# ──────────────────────────────────────────────────────────────
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+class PuertoHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/plain")
+        self.end_headers()
+        self.wfile.write(b"✅ BOT SPECTER PERU - ACTIVO")
+    
+    def log_message(self, format, *args):
+        pass  # Silencia logs innecesarios
+
+def iniciar_servidor_http():
+    """Abre el puerto que Render espera (10000)"""
+    puerto = int(os.getenv("PORT", 10000))
+    servidor = HTTPServer(("0.0.0.0", puerto), PuertoHandler)
+    print(f"🌐 Servidor HTTP activo en puerto {puerto} — Render detectado ✅")
+    servidor.serve_forever()
+
+# ──────────────────────────────────────────────────────────────
+# 🚀 INICIO COMPLETO
+# ──────────────────────────────────────────────────────────────
 def main():
-    # ⭐ ACTIVAR STICKERS/EMOJIS PREMIUM GLOBALES
+    # 🛡️ Anti-Dormir
+    iniciar_keep_alive()
+    
+    # 🌐 Iniciar servidor HTTP en hilo separado
+    threading.Thread(target=iniciar_servidor_http, daemon=True).start()
+    
     instalar_stickers_premium_globales()
-
-    # FIX para Python 3.14 + Render: crear loop manualmente
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-
     application = Application.builder().token(BOT_TOKEN).build()
 
+    # Tus comandos aquí...
     application.add_handler(CommandHandler("paises", paises))
     application.add_handler(CommandHandler("comprar", comprar))
     application.add_handler(CommandHandler("codigos", codigos))
     application.add_handler(CommandHandler("verificar", verificar))
     application.add_handler(CommandHandler("limpiar", limpiar))
     application.add_handler(CommandHandler("creditos", creditos))
-    application.add_handler(CommandHandler("saldo", saldo))
-    application.add_handler(CommandHandler("miscreditos", creditos))
+    application.add_handler(CommandHandler("saldo", creditos))
     application.add_handler(CommandHandler("addcreditos", agregar_creditos))
-    application.add_handler(CommandHandler("addcredito", agregar_creditos))
-
-    # 🛡️ ANTI-DORMIR AHORA COMO JOB, NO COMO THREAD (evita el crash)
-    if application.job_queue:
-        application.job_queue.run_repeating(anti_dormir_job, interval=240, first=10)
 
     print("==============================================")
     print("✅ BOT INICIADO")
-    print("⭐ STICKERS/EMOJIS PREMIUM GLOBALES ACTIVADOS")
-    print("💳 SISTEMA DE CRÉDITOS PREMIUM ACTIVADO")
-    print("🛡️ ANTI-DORMIR ACTIVADO (JOB MODE)")
+    print("⭐ STICKERS PREMIUM GLOBALES")
+    print("💳 CRÉDITOS ACTIVOS")
+    print("🛡️ KEEP-ALIVE ACTIVADO — 2 capas")
+    print("🌐 PUERTO HTTP ABIERTO — Render detectado ✅")
     print("==============================================")
 
-    application.run_polling(
-        allowed_updates=Update.ALL_TYPES,
-        drop_pending_updates=True
-    )
+    # 🔧 Fix para Python 3.14+
+    import asyncio
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
+    application.run_polling(drop_pending_updates=True)
 
 if __name__ == "__main__":
     main()
+    
