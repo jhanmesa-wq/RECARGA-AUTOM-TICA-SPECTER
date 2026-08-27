@@ -12,8 +12,8 @@ from telegram import Update, Message, Bot
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 # ─────────── CONFIGURACIÓN ───────────
-GRIZZLY_API_KEY = os.getenv("PON_TU_CLAVE_GRIZZLY_AQUI")
-BOT_TOKEN = os.getenv("PON_TU_TOKEN_TELEGRAM_AQUI")
+GRIZZLY_API_KEY = os.getenv("GRIZZLY_API_KEY")
+BOT_TOKEN = os.getenv("BOT_TOKEN")
 BASE_URL = "https://api.grizzly-sms.com/v2"
 
 # 👑 CONFIGURACIÓN DE CRÉDITOS
